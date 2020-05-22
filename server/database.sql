@@ -1,0 +1,6 @@
+CREATE DATABASE IF NOT EXISTS perntodo;
+
+CREATE TABLE todo(
+    todo_id BIGSERIAL PRIMARY KEY, 
+    description VARCHAR(255)
+);
