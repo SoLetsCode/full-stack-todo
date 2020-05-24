@@ -35,8 +35,43 @@ app.get("/todos", async (req, res) => {
   }
 });
 //get a todo
+app.get("/todos/:id", async (req, res) => {
+  try {
+    const todo = await pool.query(
+      `SELECT * FROM todo WHERE todo_id = ${req.params.id}`
+    );
+    res.json(todo.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 //update a todo
+app.put("/todos", async (req, res) => {
+  try {
+    console.log(req.body.description);
+    console.log(req.body.id);
+    const todo = await pool.query(
+      `UPDATE todo SET description = $1 WHERE todo_id = $2 RETURNING *`,
+      [req.body.description, req.body.id]
+    );
+    res.json(todo.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 //delete a todo
+app.delete("/todos/:id", async (req, res) => {
+  try {
+    const todo = await pool.query(
+      `DELETE FROM todo WHERE todo_id = ${req.params.id} RETURNING *`
+    );
+    !todo.rows[0] //checking for null. Null is falsy in JS.
+      ? res.json({ message: "todo not found" })
+      : res.json(todo.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`server has started on port ${PORT}`);
