@@ -1,3 +1,6 @@
+//used to hide passwords and database info
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -34,40 +37,41 @@ app.get("/todos", async (req, res) => {
     console.error(err.message);
   }
 });
+
 //get a todo
 app.get("/todos/:id", async (req, res) => {
   try {
-    const todo = await pool.query(
+    const getTodo = await pool.query(
       `SELECT * FROM todo WHERE todo_id = ${req.params.id}`
     );
-    res.json(todo.rows[0]);
+    res.json(getTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
 });
+
 //update a todo
-app.put("/todos", async (req, res) => {
+app.put("/todos/:id", async (req, res) => {
   try {
-    console.log(req.body.description);
-    console.log(req.body.id);
-    const todo = await pool.query(
+    const updateTodo = await pool.query(
       `UPDATE todo SET description = $1 WHERE todo_id = $2 RETURNING *`,
-      [req.body.description, req.body.id]
+      [req.body.description, req.params.id]
     );
-    res.json(todo.rows[0]);
+    res.json(updateTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
 });
+
 //delete a todo
 app.delete("/todos/:id", async (req, res) => {
   try {
-    const todo = await pool.query(
+    const deleteTodo = await pool.query(
       `DELETE FROM todo WHERE todo_id = ${req.params.id} RETURNING *`
     );
-    !todo.rows[0] //checking for null. Null is falsy in JS.
+    !deleteTodo.rows[0] //checking for null. Null is falsy in JS.
       ? res.json({ message: "todo not found" })
-      : res.json(todo.rows[0]);
+      : res.json(deleteTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
