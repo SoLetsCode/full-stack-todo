@@ -8,8 +8,6 @@ import ListTodo from "./components/ListTodo";
 function App() {
   const [list, setList] = useState();
 
-  const deleteItem = () => {};
-
   const fetchData = async () => {
     const result = await fetch("http://localhost:5000/todos")
       .then((response) => response.json())

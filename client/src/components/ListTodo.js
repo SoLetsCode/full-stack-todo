@@ -1,4 +1,5 @@
 import React from "react";
+import EditTodo from "./EditTodo";
 
 export default function ListTodo({ list, fetchData }) {
   const deleteTodo = async (id) => {
@@ -7,7 +8,7 @@ export default function ListTodo({ list, fetchData }) {
         method: "DELETE",
       });
       fetchData();
-      console.log(deleteTodo);
+      deleteTodo.json().then((data) => console.log(data));
     } catch (error) {
       console.error(error.message);
     }
@@ -16,7 +17,9 @@ export default function ListTodo({ list, fetchData }) {
     return (
       <tr key={data.todo_id}>
         <td>{data.description}</td>
-        <td>Edit</td>
+        <td>
+          <EditTodo todo={data} fetchData={fetchData} />
+        </td>
         <td>
           <button
             className="btn btn-danger"
